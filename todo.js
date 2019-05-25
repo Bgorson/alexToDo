@@ -12,6 +12,7 @@ const invocationName = "to do";
 //   Alexa will track attributes for you, by default only during the lifespan of your session.
 //   The history[] array will track previous request(s), used for contextual Help/Yes/No handling.
 //   Set up DynamoDB persistence to have the skill save and reload these attributes between skill sessions.
+let tasks = ["code", "clean the dishes"]
 
 function getMemoryAttributes() {   const memoryAttributes = {
        "history":[],
@@ -162,8 +163,7 @@ const getTodo_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let say = 'Hello from get To do. ';
-
+        let say = `hello! Here is what you have to do today. ${tasks.join(' ')} `;
 
         return responseBuilder
             .speak(say)
@@ -182,7 +182,7 @@ const addItem_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let say = 'Hello from addItem. ';
+        let say = "You've selected Add Items.";
 
         let slotStatus = '';
         let resolvedSlot;
@@ -193,7 +193,8 @@ const addItem_Handler =  {
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: item 
         if (slotValues.item.heardAs) {
-            slotStatus += ' slot item was heard as ' + slotValues.item.heardAs + '. ';
+            slotStatus += ' slot item was heard as ' + slotValues.item.heardAs + '. Adding to list ';
+            tasks.push(slotValues.item.heardAs)
         } else {
             slotStatus += 'slot item is empty. ';
         }
@@ -286,8 +287,6 @@ const LaunchRequest_Handler =  {
     handle(handlerInput) {
         const responseBuilder = handlerInput.responseBuilder;
 
-        
-        let tasks = ["code", "and ", "clean the dishes"]
 
 let say = `hello! Here is what you have to do today. ${tasks.join(' ')} `;
 

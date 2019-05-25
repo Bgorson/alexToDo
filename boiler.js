@@ -162,7 +162,7 @@ const getTodo_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let say = 'Hello from get To do. ';
+        let say = 'Hello from getTodo. ';
 
 
         return responseBuilder
@@ -225,59 +225,6 @@ const addItem_Handler =  {
     },
 };
 
-const removeItem_Handler =  {
-    canHandle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'removeItem' ;
-    },
-    handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        const responseBuilder = handlerInput.responseBuilder;
-        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-        let say = 'Hello from removeItem. ';
-
-        let slotStatus = '';
-        let resolvedSlot;
-
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
-        // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-        //   SLOT: item 
-        if (slotValues.item.heardAs) {
-            slotStatus += ' slot item was heard as ' + slotValues.item.heardAs + '. ';
-        } else {
-            slotStatus += 'slot item is empty. ';
-        }
-        if (slotValues.item.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.item.resolved !== slotValues.item.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.item.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.item.heardAs + '" to the custom slot type used by slot item! '); 
-        }
-
-        if( (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.item.heardAs) ) {
-            slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('removeItem','item'), 'or');
-        }
-
-        say += slotStatus;
-
-
-        return responseBuilder
-            .speak(say)
-            .reprompt('try again, ' + say)
-            .getResponse();
-    },
-};
-
 const LaunchRequest_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -286,10 +233,7 @@ const LaunchRequest_Handler =  {
     handle(handlerInput) {
         const responseBuilder = handlerInput.responseBuilder;
 
-        
-        let tasks = ["code", "and ", "clean the dishes"]
-
-let say = `hello! Here is what you have to do today. ${tasks.join(' ')} `;
+        let say = 'hello' + ' and welcome to ' + invocationName + ' ! Say help to hear some options.';
 
         let skillTitle = capitalize(invocationName);
 
@@ -719,7 +663,6 @@ exports.handler = skillBuilder
         AMAZON_NavigateHomeIntent_Handler, 
         getTodo_Handler, 
         addItem_Handler, 
-        removeItem_Handler, 
         LaunchRequest_Handler, 
         SessionEndedHandler
     )
@@ -789,65 +732,18 @@ const model = {
           ]
         },
         {
-          "name": "removeItem",
-          "slots": [
-            {
-              "name": "item",
-              "type": "tasks"
-            }
-          ],
-          "samples": [
-            "{item} is complete",
-            "remove {item}",
-            "i have done {item}"
-          ]
-        },
-        {
           "name": "LaunchRequest"
         }
       ],
       "types": [
         {
           "name": "tasks",
-          "values": [
-            {
-              "name": {
-                "value": "water plants"
-              }
-            },
-            {
-              "name": {
-                "value": "get mail"
-              }
-            },
-            {
-              "name": {
-                "value": "go to work"
-              }
-            },
-            {
-              "name": {
-                "value": "homework"
-              }
-            },
-            {
-              "name": {
-                "value": "code"
-              }
-            },
-            {
-              "name": {
-                "value": "chores"
-              }
-            },
-            {
-              "name": {
-                "value": "dishes"
-              }
-            }
-          ]
+          "values": []
         }
       ]
     }
   }
 };
+
+
+

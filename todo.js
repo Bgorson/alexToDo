@@ -162,8 +162,7 @@ const getTodo_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-        let say = `hello! Here is what you have to do today. ${tasks.join(' ')} `;
+        let say = `Here is what you have to do today. ${tasks.join(' . ')} `;
 
         return responseBuilder
             .speak(say)
@@ -182,7 +181,7 @@ const addItem_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let say = "You've selected Add Items.";
+        let say = "Lets add ";
 
         let slotStatus = '';
         let resolvedSlot;
@@ -198,25 +197,25 @@ const addItem_Handler =  {
         } else {
             slotStatus += 'slot item is empty. ';
         }
-        if (slotValues.item.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.item.resolved !== slotValues.item.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.item.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.item.heardAs + '" to the custom slot type used by slot item! '); 
-        }
+        // if (slotValues.item.ERstatus === 'ER_SUCCESS_MATCH') {
+        //     slotStatus += 'a valid ';
+        //     if(slotValues.item.resolved !== slotValues.item.heardAs) {
+        //         slotStatus += 'synonym for ' + slotValues.item.resolved + '. '; 
+        //         } else {
+        //         slotStatus += 'match. '
+        //     } // else {
+        //         //
+        // }
+        // if (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') {
+        //     slotStatus += 'which did not match any slot value. ';
+        //     console.log('***** consider adding "' + slotValues.item.heardAs + '" to the custom slot type used by slot item! '); 
+        // }
 
-        if( (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.item.heardAs) ) {
-            slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('addItem','item'), 'or');
-        }
+        // if( (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.item.heardAs) ) {
+        //     slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('addItem','item'), 'or');
+        // }
 
-        say += slotStatus;
+        say += slotStatus + " to your list.";
 
 
         return responseBuilder
@@ -236,7 +235,7 @@ const removeItem_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let say = 'Hello from removeItem. ';
+        let say = '';
 
         let slotStatus = '';
         let resolvedSlot;
@@ -248,28 +247,32 @@ const removeItem_Handler =  {
         //   SLOT: item 
         if (slotValues.item.heardAs) {
             slotStatus += ' slot item was heard as ' + slotValues.item.heardAs + '. ';
+            let index = tasks.indexOf(slotValues.item.heardAs)
+            if (index >-1)  {
+                tasks.splice(index,1)
+            }
         } else {
             slotStatus += 'slot item is empty. ';
         }
-        if (slotValues.item.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.item.resolved !== slotValues.item.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.item.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.item.heardAs + '" to the custom slot type used by slot item! '); 
-        }
+        // if (slotValues.item.ERstatus === 'ER_SUCCESS_MATCH') {
+        //     slotStatus += 'a valid ';
+        //     if(slotValues.item.resolved !== slotValues.item.heardAs) {
+        //         slotStatus += 'synonym for ' + slotValues.item.resolved + '. '; 
+        //         } else {
+        //         slotStatus += 'match. '
+        //     } // else {
+        //         //
+        // }
+        // if (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') {
+        //     slotStatus += 'which did not match any slot value. ';
+        //     console.log('***** consider adding "' + slotValues.item.heardAs + '" to the custom slot type used by slot item! '); 
+        // }
 
-        if( (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.item.heardAs) ) {
-            slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('removeItem','item'), 'or');
-        }
+        // if( (slotValues.item.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.item.heardAs) ) {
+        //     slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('removeItem','item'), 'or');
+        // }
 
-        say += slotStatus;
+        say += slotValues.item.heardAs+ " was removed.";
 
 
         return responseBuilder
@@ -288,7 +291,7 @@ const LaunchRequest_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
 
 
-let say = `hello! Here is what you have to do today. ${tasks.join(' ')} `;
+let say = `hello! Welcome to your to do list. You can add items, remove items and hear whats on your list.`;
 
         let skillTitle = capitalize(invocationName);
 
@@ -837,11 +840,6 @@ const model = {
             {
               "name": {
                 "value": "chores"
-              }
-            },
-            {
-              "name": {
-                "value": "dishes"
               }
             }
           ]
